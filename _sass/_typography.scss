@@ -21,7 +21,7 @@ html {
 }
 
 html, body, p, a {
-  @include sans-serif
+  @include sans-serif;
 }
 
 h1, h2, h3, h4, h5 {
@@ -68,7 +68,8 @@ a {
 }
 
 code, pre {
-  @include monospace
+  @include monospace;
+  white-space: nowrap;
 }
 
 @supports (font-variation-settings: normal) {
