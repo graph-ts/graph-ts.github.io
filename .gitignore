@@ -1,6 +1,4 @@
-_site
+node_modules
+.docusaurus
+.DS_STORE
 .idea
-.sass-cache
-.jekyll-cache
-.jekyll-metadata
-vendor
