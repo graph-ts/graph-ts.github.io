@@ -1,0 +1,18 @@
+---
+title: Introduction
+---
+
+import { GraphContainer } from '../../src/components/GraphContainer';
+import { ResponsiveGraph } from '../../src/components/ResponsiveGraph';
+import { basicGraph } from './introduction/basicGraph';
+import { styles0 } from './introduction/basicStyles';
+import { shape0 } from './introduction/basicShapes';
+
+This is an introduction. It's got some stuff in it.
+
+<GraphContainer height={300}>
+    <ResponsiveGraph
+        graph={basicGraph}
+        defaultShape={shape0}
+        {...styles0}/>
+</GraphContainer>
