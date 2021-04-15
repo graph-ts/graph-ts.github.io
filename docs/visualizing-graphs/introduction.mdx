@@ -2,6 +2,7 @@
 title: Introduction
 ---
 
+import { TabbedCodeBlock } from '../../src/components/TabbedCodeBlock';
 import { GraphContainer } from '../../src/components/GraphContainer';
 import { ResponsiveGraph } from '../../src/components/ResponsiveGraph';
 import { basicGraph } from './introduction/basicGraph';
@@ -16,3 +17,17 @@ This is an introduction. It's got some stuff in it.
         defaultShape={shape0}
         {...styles0}/>
 </GraphContainer>
+
+And here we have some code in both TypeScript and JavaScript:
+
+<TabbedCodeBlock>
+
+```typescript
+console.log('ts');
+```
+
+```javascript
+console.log('js');
+```
+
+</TabbedCodeBlock>

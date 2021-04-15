@@ -1,0 +1,160 @@
+---
+title: Getting Started with Graph TS
+slug: /
+---
+
+import { TabbedCodeBlock } from '../../src/components/TabbedCodeBlock';
+
+What is it?
+
+Why do you need it?
+
+How can it be used?
+
+## The Graph TS Libraries
+
+Here is a brief description of each of the Graph TS libraries.
+
+## Basic Examples
+
+### Working With Graphs
+
+Graphs are created and manipulated using the [```graph-lib```](https://github.com/graph-ts/graph-lib) library.
+The basic building blocks of graphs are nodes and edges which have the following shape:
+
+```typescript
+type Node {
+  id: string // a unique node ID
+}
+
+type Edge {
+  id: string      // a unique edge ID
+  source: string  // a node ID
+  target: string  // a node ID
+}
+```
+
+To create a graph from a set of nodes and edges, use the ```newGraph()``` function, which accepts an array of nodes
+and an array of edges as parameters.
+
+<TabbedCodeBlock>
+
+```typescript
+import { newGraph, Graph, Node, Edge } from '@graph-ts/graph-lib';
+
+const a: Node = { id: 'a' };
+const b: Node = { id: 'b' };
+const ab: Edge = { id: 'ab', source: 'a', target: 'b' };
+
+const graph0: Graph = newGraph([a, b], [ab]);
+```
+
+```javascript
+import { newGraph } from '@graph-ts/graph-lib';
+
+const a = { id: 'a' };
+const b = { id: 'b' };
+const ab = { id: 'ab', source: 'a', target: 'b' };
+
+const graph0 = newGraph([a, b], [ab]);
+```
+
+</TabbedCodeBlock>
+
+In ```graph-lib```, nodes, edges, and the graphs that they constitute are immutable. So when we need to
+update a graph by, for example, adding nodes and edges, instead of modifying the existing graph,
+we create a new one. Continuing the example above:
+
+<TabbedCodeBlock>
+
+```typescript
+import { addNodes, addEdges } from '@graph-ts/graph-lib';
+
+const c: Node = { id: 'c' };
+const d: Node = { id: 'd' };
+const cd: Edge = { id: 'cd', source: 'c', target: 'd' };
+const ac: Edge = { id: 'ac', source: 'a', target: 'c' };
+
+// Nodes must be added to the graph before any edges that connect them
+const graph1 = addNodes(graph0, [c, d]);
+const graph2 = addEdges(graph1, [cd, ac]);
+
+graph0 === graph1; // false
+graph1 === graph2; // false
+```
+
+```javascript
+import { addNodes, addEdges } from '@graph-ts/graph-lib';
+
+const c = { id: 'c' };
+const d = { id: 'd' };
+const cd = { id: 'cd', source: 'c', target: 'd' };
+const ac = { id: 'ac', source: 'a', target: 'c' };
+
+// Nodes must be added to the graph before any edges that connect them
+const graph1 = addNodes(graph0, [c, d]);
+const graph2 = addEdges(graph1, [cd, ac]);
+
+graph0 === graph1; // false
+graph1 === graph2; // false
+```
+
+</TabbedCodeBlock>
+
+To work with graphs, ```graph-lib``` provides numerous methods for accessing graph components and for graph traversal.
+
+<TabbedCodeBlock>
+
+```typescript
+import { getNodes, getEdges, breadthFirst } from '@graph-ts/graph-lib';
+
+// Retrieve the nodes and edges
+const nodes: Node[] = getNodes(graph2); // [a, b, c, d]
+const edges: Edge[] = getEdges(graph2); // [ab, cd, ac];
+
+/**
+ * Get an array of nodes in breadth-first traversal
+ * order starting at node 'a'.
+ */
+const bfo: Node[] = breadthFirst(graph, 'a'); // [ab, ac, cd];
+
+/**
+ * Traverse the graph in breadth-first order starting
+ * at node 'a', printing node IDs along the way.
+ */
+breadthFirst(graph2, 'a', (node: Node) => {
+  console.log(node.id);
+});
+```
+
+```javascript
+import { getNodes, getEdges, breadthFirst } from '@graph-ts/graph-lib';
+
+// Retrieve the nodes and edges
+const nodes = getNodes(graph2); // [a, b, c, d]
+const edges = getEdges(graph2); // [ab, cd, ac];
+
+/**
+ * Get an array of nodes in breadth-first traversal
+ * order starting at node 'a'.
+ */
+const bfo = breadthFirst(graph, 'a'); // [ab, ac, cd];
+
+/**
+ * Traverse the graph in breadth-first order starting
+ * at node 'a', printing node IDs along the way.
+ */
+breadthFirst(graph2, 'a', node: => {
+  console.log(node.id);
+});
+```
+
+</TabbedCodeBlock>
+
+For a more in-depth and example driven look at the `graph-lib` library, check out the
+[Working With Graphs](/docs/working-with-graphs/introduction) section of the guide, or check out the API Docs for a
+complete overview of the `graph-lib` API.
+
+### Visualizing Graphs
+
+This is an example where we visualize a graph.
