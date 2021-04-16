@@ -10,9 +10,9 @@ module.exports = {
         },
         {
             type: 'category',
-            label: 'Working with Graphs',
+            label: 'Creating Graphs',
             items: [
-                'working-with-graphs/introduction'
+                'creating-graphs/introduction'
             ]
         },
         {
@@ -20,17 +20,6 @@ module.exports = {
             label: 'Visualizing Graphs',
             items: [
                 'visualizing-graphs/introduction'
-            ]
-        },
-        {
-            type: 'category',
-            label: 'Docusaurus',
-            items: [
-                'create-a-page',
-                'create-a-document',
-                'create-a-blog-post',
-                'markdown-features',
-                'thank-you',
             ]
         }
     ],

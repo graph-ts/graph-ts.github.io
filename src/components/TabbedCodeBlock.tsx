@@ -2,12 +2,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import React, { FC } from 'react';
 
-interface TabbedCodeBlockProps {
-    ts: string
-    js: string
-}
-
-const TabbedCodeBlock: FC<TabbedCodeBlockProps> = props => {
+const TabbedCodeBlock: FC = props => {
     const children = React.Children.toArray(props.children);
     const ts = children[0];
     const js = children[1];

@@ -1,6 +1,6 @@
-import React, { CSSProperties, FC } from 'react';
-import { GraphGroupProps, GraphSVGDiv } from '@graph-ts/graph-svg';
+import { GraphSVGDiv, GraphSVGDivProps } from '@graph-ts/graph-svg';
 import useThemeContext from '@theme/hooks/useThemeContext';
+import React, { CSSProperties, FC } from 'react';
 
 type Dict<T> = { [key: string]: T }
 
@@ -24,7 +24,7 @@ export interface ResponsiveStyles {
     lightStyles: Styles
 }
 
-export type ResponsiveGraphProps = GraphGroupProps & ResponsiveStyles;
+export type ResponsiveGraphProps = GraphSVGDivProps & ResponsiveStyles;
 
 const ResponsiveGraph: FC<ResponsiveGraphProps> = props => {
 
