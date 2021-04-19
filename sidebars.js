@@ -4,23 +4,32 @@ module.exports = {
             type: 'category',
             label: 'Introduction',
             items: [
-                'introduction/getting-started',
-                'introduction/installation',
+                'guides/introduction/getting-started'
             ],
         },
         {
             type: 'category',
             label: 'Creating Graphs',
             items: [
-                'creating-graphs/introduction'
+                'guides/graph-lib/introduction'
             ]
         },
         {
             type: 'category',
             label: 'Visualizing Graphs',
             items: [
-                'visualizing-graphs/introduction'
+                'guides/graph-svg/introduction'
             ]
         }
     ],
+    api: [
+        {
+            type: 'category',
+            label: 'Graph TS APIs',
+            items: [
+                'apis/graph-lib',
+                'apis/graph-svg'
+            ]
+        }
+    ]
 };

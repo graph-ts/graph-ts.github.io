@@ -1,4 +1,4 @@
-import { ResponsiveStyles } from '../../../src/components/ResponsiveGraph';
+import { ResponsiveStyles } from '../../../../src/components/ResponsiveGraph';
 
 const styles0: ResponsiveStyles = {
     darkStyles: {

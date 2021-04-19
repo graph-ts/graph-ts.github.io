@@ -18,10 +18,14 @@ module.exports = {
             },
             items: [
                 {
-                    to: 'docs/',
-                    activeBasePath: 'docs',
                     label: 'Docs',
+                    to: 'docs/guides/introduction/getting-started',
                     position: 'right',
+                },
+                {
+                    label: 'APIs',
+                    to: 'docs/apis/graph-lib',
+                    position: 'right'
                 },
                 {
                     to: 'blog',

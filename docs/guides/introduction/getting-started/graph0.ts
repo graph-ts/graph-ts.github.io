@@ -1,6 +1,6 @@
 import { newGraph, Node, Edge, Graph } from '@graph-ts/graph-lib';
 import { ShapeDef, Vector2 } from '@graph-ts/graph-svg';
-import { ResponsiveStyles } from '../../../src/components/ResponsiveGraph';
+import { ResponsiveStyles } from '../../../../src/components/ResponsiveGraph';
 
 // Create an array of graph nodes with x- and y-coordinates
 const nodes: Node<Vector2>[] = [

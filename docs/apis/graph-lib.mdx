@@ -1,0 +1,167 @@
+---
+title: graph-lib API
+sidebar_label: graph-lib
+---
+
+import TOCInline from '@theme/TOCInline';
+
+<TOCInline toc={toc}/>
+
+## Types
+
+### `Node<T>` {#node}
+
+### `Edge<T>` {#edge}
+
+### `Graph<N, E>` {#graph}
+
+## Creating Graphs
+
+### `newGraph(nodes?, edges?)` {#newGraph}
+
+Create a new graph from an existing set of nodes and edges. If no nodes or edges are provided, an empty graph is
+created. All node IDs must be unique among nodes and edge IDs must be unique among edges. All edge source and target
+node IDs must refer to nodes in the `nodes` array.
+
+**Type Definitions:**
+
+```newGraph(nodes?: Node[], edges?: Edge[]): Graph```
+
+**Arguments:**
+* `nodes`: (Optional) An array of [Nodes](#node)
+* `edges`: (Optional) An array of [Edges](#edge)
+
+**Returns:**
+
+A [Graph](#graph) composed of all provided nodes and edges.
+
+**Examples:**
+
+```typescript
+const a: Node = { id: 'a' };
+const b: Node = { id: 'b' };
+const ab: Edge = { id: 'ab', source: 'a', target: 'b' };
+
+// An empty graph
+const graph: Graph = newGraph();
+
+// A graph with one node
+const graph: Graph = newGraph([a]);
+
+// A graph with two nodes and one edge
+const graph: Graph = newGraph([a, b], [ab]);
+```
+
+## Editing Graphs
+
+The functions in this section all create a new graph by editing an existing graph. Because graphs are immutable,
+they are never actually "edited". Rather, a new graph is produced to reflect the result of the desired change.
+
+### `addEdge(graph, edge)` {#addEdge}
+
+Add an edge to a graph. The new edge ID must be unique among all existing edge IDs, and the new edge's source and target
+node IDs must refer to nodes that already exist in the graph.
+
+**Type Definitions:**
+
+`addEdge(graph: Graph, edge: Edge): Graph`
+
+**Arguments:**
+* `graph`: A [Graph](#graph) object
+* `edge`: An [Edge](#edge) object
+
+**Returns:**
+
+A new [Graph](#graph) with the added edge
+
+### `addEdges(graph, edges)` {#addEdges}
+
+Add multiple edges to a graph. All new edge IDs must be unique among each other and all existing edge IDs. All new edge
+source and target node IDs must refer to nodes that already exist in the graph.
+
+**Type Definitions:**
+
+`addEdges(graph: Graph, edges: Edge[]): Graph`
+
+**Arguments:**
+* `graph`: A [Graph](#graph) object
+* `edges`: An array of [Edge](#edge) objects
+
+**Returns:**
+
+A new [Graph](#graph) with the added edges
+
+### `addNode(graph, node)` {#addNode}
+
+Add a node to a graph. The new node ID must be unique among all existing node IDs.
+
+**Type Definitions:**
+
+`addNode(graph: Graph, node: Node): Graph`
+
+**Arguments:**
+* `graph`: A [Graph](#graph) object
+* `node`: A [Node](#node) object
+
+**Returns:**
+
+A new [Graph](#graph) with the added node
+
+### `addNodes(graph, nodes)` {#addNodes}
+
+Add multiple nodes to a graph. All new node IDs must be unique among each other and all existing node IDs.
+
+**Type Definitions:**
+
+`addNodes(graph: Graph, nodes: Node[]): Graph`
+
+**Arguments:**
+* `graph`: A [Graph](#graph) object
+* `nodes`: An array of [Node](#node) objects
+
+**Returns:**
+
+A new [Graph](#graph) with the added nodes
+
+## Using Graphs
+
+### `breadthFirst(graph, nodeID, callback?)` {#breadthFirst}
+
+#### `breadthFirst(graph: Graph, nodeID: string): Node[]`
+#### `breadthFirst(graph: Graph, nodeID: string, callback: (current: Node) => boolean)`
+
+### `getEdge(graph, edgeID)` {#getEdge}
+
+#### `getEdge(graph: Graph, edgeID: string): Edge | undefined`
+
+### `getEdges(graph, edgeIDs)` {#getEdges}
+
+#### `getEdges(graph: Graph, edgeIDs: string[]): (Edge | undefined)[]`
+
+### `getNode(graph, nodeID)` {#getNode}
+
+#### `getNode(graph: Graph, nodeID: string): Node | undefined`
+
+### `getNodes(graph, nodeIDs)` {#getNodes}
+
+#### `getNodes(graph: Graph, nodeIDs: string[]): (Node | undefined)[]`
+
+### `getSuccessors(graph, nodeID)` {#getSuccessors}
+
+#### `getSuccessors(graph: Graph, nodeID: string): Node[]`
+
+### `hasEdge(graph, edgeID)` {#hasEdge}
+
+#### `hasEdge(graph: Graph, edgeID: string): boolean`
+
+### `hasEdges(graph, edgeIDs)` {#hasEdges}
+
+#### `hasEdges(graph: Graph, edgeIDs: string[]): boolean`
+
+### `hasNode(graph, nodeID)` {#hasNode}
+
+#### `hasNode(graph: Graph, nodeID: string): boolean`
+
+### `hasNodes(graph, nodeIDs)` {#hasNodes}
+
+#### `hasNodes(graph: Graph, nodeIDs: string[]): boolean`
