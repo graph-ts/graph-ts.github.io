@@ -4,14 +4,15 @@ module.exports = {
             type: 'category',
             label: 'Introduction',
             items: [
-                'guides/introduction/getting-started'
+                'guides/introduction/getting-started',
             ],
         },
         {
             type: 'category',
             label: 'Creating Graphs',
             items: [
-                'guides/graph-lib/introduction'
+                'guides/graph-lib/introduction',
+                'guides/graph-lib/types'
             ]
         },
         {

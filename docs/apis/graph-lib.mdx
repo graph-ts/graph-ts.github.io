@@ -4,6 +4,8 @@ sidebar_label: graph-lib
 ---
 
 import TOCInline from '@theme/TOCInline';
+import { TabbedCodeBlock } from '../../src/components/TabbedCodeBlock';
+import { APISeparator } from '../../src/components/APISeparator';
 
 <TOCInline toc={toc}/>
 
@@ -11,9 +13,74 @@ import TOCInline from '@theme/TOCInline';
 
 ### `Node<T>` {#node}
 
+An immutable object with a string `id` and any additional properties defined by type `T`.
+
+```typescript
+type Node<T={}> = Immutable<T> & {
+    readonly id: string
+}
+```
+
+`Immutable<T>` is a TypeScript type from the [Immer](https://immerjs.github.io/immer/api) library used to convert
+mutable types to immutable types.
+
 ### `Edge<T>` {#edge}
 
+An immutable object with a string `id`, `source` and `target` node IDs defining node connectivity, and any additional
+properties defined by type `T`.
+
+```typescript
+type Edge<T={}> = Immutable<T> & {
+    readonly id: string
+    readonly source: string
+    readonly target: string
+}
+```
+
+`Immutable<T>` is a TypeScript type from the [Immer](https://immerjs.github.io/immer/api) library used to convert
+mutable types to immutable types.
+
 ### `Graph<N, E>` {#graph}
+
+A graph composed of nodes of type `N` and edges of type `E`, where `N` extends [`Node`](#node) and `E`
+extends [`Edge`](#edge). Graph objects should not be manually created; rather, use [`newGraph()`](#newGraph) to
+generate a graph object from a set of nodes and edges.
+
+```typescript
+type Graph<N extends Node = Node, E extends Edge = Edge> = {
+
+    // Map node IDs to nodes
+    readonly nodes: { [id: string]: N }
+
+    // Map edge IDs to edges
+    readonly edges: { [id: string]: E }
+
+    // Map target node IDs to source node IDs to array of edge IDs
+    readonly predecessors: {
+        [target: string]: {
+            [source: string]: string[]
+        }
+    }
+
+    // Map source node IDs to target node IDs to array of edge IDs
+    readonly successors: {
+        [source: string]: {
+            [target: string]: string[]
+        }
+    }
+
+    // Map node IDs to array of edge IDs
+    readonly inedges: {
+        [id: string]: string[]
+    }
+
+    // Map node IDs to array of edge IDs
+    readonly outedges: {
+        [id: string]: string[]
+    }
+
+}
+```
 
 ## Creating Graphs
 
@@ -37,6 +104,8 @@ A [Graph](#graph) composed of all provided nodes and edges.
 
 **Examples:**
 
+<TabbedCodeBlock>
+
 ```typescript
 const a: Node = { id: 'a' };
 const b: Node = { id: 'b' };
@@ -51,6 +120,25 @@ const graph: Graph = newGraph([a]);
 // A graph with two nodes and one edge
 const graph: Graph = newGraph([a, b], [ab]);
 ```
+
+```javascript
+const a = { id: 'a' };
+const b = { id: 'b' };
+const ab = { id: 'ab', source: 'a', target: 'b' };
+
+// An empty graph
+const graph = newGraph();
+
+// A graph with one node
+const graph = newGraph([a]);
+
+// A graph with two nodes and one edge
+const graph = newGraph([a, b], [ab]);
+```
+
+</TabbedCodeBlock>
+
+<APISeparator/>
 
 ## Editing Graphs
 
@@ -74,10 +162,36 @@ node IDs must refer to nodes that already exist in the graph.
 
 A new [Graph](#graph) with the added edge
 
+**Examples:**
+
+<TabbedCodeBlock>
+
+```typescript
+const a: Node = { id: 'a' };
+const b: Node = { id: 'b' };
+const ab: Edge = { id: 'ab', source: 'a', target: 'b' };
+
+const g0: Graph = newGraph([a, b]);
+const g1: Graph = addEdge(g0, ab);
+```
+
+```javascript
+const a = { id: 'a' };
+const b = { id: 'b' };
+const ab = { id: 'ab', source: 'a', target: 'b' };
+
+const g0 = newGraph([a, b]);
+const g1 = addEdge(g0, ab);
+```
+
+</TabbedCodeBlock>
+<APISeparator/>
+
 ### `addEdges(graph, edges)` {#addEdges}
 
 Add multiple edges to a graph. All new edge IDs must be unique among each other and all existing edge IDs. All new edge
 source and target node IDs must refer to nodes that already exist in the graph.
+
 
 **Type Definitions:**
 
@@ -90,6 +204,33 @@ source and target node IDs must refer to nodes that already exist in the graph.
 **Returns:**
 
 A new [Graph](#graph) with the added edges
+
+**Examples:**
+
+<TabbedCodeBlock>
+
+```typescript
+const a: Node = { id: 'a' };
+const b: Node = { id: 'b' };
+const ab: Edge = { id: 'ab', source: 'a', target: 'b' };
+const ba: Edge = { id: 'ba', source: 'b', target: 'a' };
+
+const g0: Graph = newGraph([a, b]);
+const g1: Graph = addEdge(g0, [ab, ba]);
+```
+
+```javascript
+const a = { id: 'a' };
+const b = { id: 'b' };
+const ab = { id: 'ab', source: 'a', target: 'b' };
+const ba = { id: 'ba', source: 'b', target: 'a' };
+
+const g0 = newGraph([a, b]);
+const g1 = addEdge(g0, [ab, ba]);
+```
+
+</TabbedCodeBlock>
+<APISeparator/>
 
 ### `addNode(graph, node)` {#addNode}
 
@@ -107,6 +248,26 @@ Add a node to a graph. The new node ID must be unique among all existing node ID
 
 A new [Graph](#graph) with the added node
 
+**Examples:**
+
+<TabbedCodeBlock>
+
+```typescript
+const g0: Graph = newGraph();
+const g1: Graph = addNode(g0, { id: 'a' });
+const g2: Graph = addNode(g1, { id: 'b' });
+```
+
+```javascript
+const g0 = newGraph();
+const g1 = addNode(g0, { id: 'a' });
+const g2 = addNode(g1, { id: 'b' });
+```
+
+</TabbedCodeBlock>
+
+<APISeparator/>
+
 ### `addNodes(graph, nodes)` {#addNodes}
 
 Add multiple nodes to a graph. All new node IDs must be unique among each other and all existing node IDs.
@@ -122,6 +283,28 @@ Add multiple nodes to a graph. All new node IDs must be unique among each other 
 **Returns:**
 
 A new [Graph](#graph) with the added nodes
+
+**Examples:**
+
+<TabbedCodeBlock>
+
+```typescript
+const a: Node = { id: 'a' };
+const b: Node = { id: 'b' };
+const g0: Graph = newGraph();
+const g1: Graph = addNodes(g0, [a, b]);
+```
+
+```javascript
+const a = { id: 'a' };
+const b = { id: 'b' };
+const g0 = newGraph();
+const g1 = addNodes(g0, [a, b]);
+```
+
+</TabbedCodeBlock>
+
+<APISeparator/>
 
 ## Using Graphs
 

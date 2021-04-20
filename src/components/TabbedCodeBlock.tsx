@@ -8,6 +8,7 @@ const TabbedCodeBlock: FC = props => {
     const js = children[1];
     return <Tabs
         defaultValue={'ts'}
+        groupId={'language-pref'}
         values={[
             { label: 'TypeScript', value: 'ts'},
             { label: 'JavaScript', value: 'js'}

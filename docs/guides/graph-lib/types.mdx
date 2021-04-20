@@ -1,0 +1,97 @@
+---
+title: Types
+---
+
+An introduction to the `graph-lib` types...
+
+## Nodes
+
+Graph nodes are simple objects with only an `id` property.
+
+```typescript
+type Node = {
+    id: string
+}
+```
+
+All node IDs in a [Graph](#graph) must be unique among all other nodes. Furthermore, once a node has been placed into a
+graph by using, for example, the [`newGraph()`](#newGraph) function, all properties will be marked as `readonly`.
+
+Nodes can be extended with additional properties using the TypeScript generic syntax. For example, if we want to use
+nodes that have x- and y-coordinates, we can do the following:
+
+```typescript
+type Vector2 = {
+    x: number
+    y: number
+}
+
+type PositionedNode = Node<Vector2>
+
+const node: PositionedNode = {
+    id: 'a',
+    x: 0,
+    y: 0
+};
+```
+
+Nodes defined this way will carry their types with them as they flow through the various `graph-lib` functions. So if
+you use [`getNode()`](#getNode) to retrieve a node from a graph you created using the `PositionedNode` type,
+TypeScript will understand that the returned node is a `PositionedNode`.
+
+## Edges
+
+Graph edges are simple objects that describe the connectivity of two nodes. They have an `id` property, and `source`
+and `target` properties which refer to two node IDs.
+
+```typescript
+type Edge = {
+    id: string
+    source: string
+    target: string
+}
+```
+
+All edge IDs in a [Graph](#graph) must be unique among all other edges. Furthermore, once an edge has been placed into
+a graph by using, for example, the [`newGraph()`](#newGraph) function, all properties will be marked as `readonly`.
+
+Edges can be extended with additional properties using the TypeScript generic syntax. For example, if we want to assign
+a numeric weight to edges, we can do the following:
+
+```typescript
+interface Weighted {
+    weight: number
+}
+
+type WeightedEdge = Edge<Weighted>
+
+const edge: WeightedEdge = {
+    id: 'ab',
+    source: 'a',
+    target: 'b',
+    weight: 42
+};
+```
+
+Edges defined this way will carry their types with them as they flow through various `graph-lib` functions. So if
+you use [`getEdge()`](#getEdge) to retrieve an edge from a graph you created using the `WeightedEdge` type,
+TypeScript will understand that the returned edge will is a `WeightedEdge`.
+
+## Graphs
+
+Graphs are composed of [nodes](#node) and [edges](#edge). Graph objects are never manually created; rather, the
+[`newGraph()`](#newGraph) function is used to create an empty graph (or a graph from some existing nodes and edges).
+
+Graphs are immutable and you should never attempt to directly modify a graph object.
+
+Graphs created using `Node` or `Edge` types that have been extended with additional properties will automatically carry
+those types with them. For example, using the `PositionedNode` and `WeightedEdge` types from above:
+
+```typescript
+const a: PositionedNode = { id: 'a', x: 1, y: 0 };
+const b: PositionedNode = { id: 'b', x: 0, y: 1 };
+const ab: WeightedEdge = { id: 'ab', source: 'a', target: 'b', weight: 100 };
+
+// graph has type Graph<PositionedNode, WeightedEdge>
+const graph = newGraph([a, b], [ab]);
+```

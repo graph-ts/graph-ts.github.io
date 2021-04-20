@@ -10,6 +10,12 @@ module.exports = {
     organizationName: 'graph-ts', // Usually your GitHub org/user name.
     projectName: 'graph-ts.github.io', // Usually your repo name.
     themeConfig: {
+        colorMode: {
+            respectPrefersColorScheme: true
+        },
+        prism: {
+            theme: require('prism-react-renderer/themes/dracula')
+        },
         navbar: {
             title: 'Graph TS',
             logo: {
@@ -47,7 +53,7 @@ module.exports = {
                     items: [
                         {
                             label: 'Getting Started',
-                            to: 'docs/',
+                            to: 'docs/guides/introduction/getting-started',
                         },
                     ],
                 },
@@ -93,13 +99,10 @@ module.exports = {
                     sidebarPath: require.resolve('./sidebars.js'),
                     // Please change this to your repo.
                     editUrl:
-                        'https://github.com/facebook/docusaurus/edit/master/website/',
+                        'https://github.com/graph-ts/graph-ts.github.io/tree/docusaurus',
                 },
                 blog: {
                     showReadingTime: true,
-                    // Please change this to your repo.
-                    editUrl:
-                        'https://github.com/facebook/docusaurus/edit/master/website/blog/',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
