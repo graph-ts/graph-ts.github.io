@@ -7,6 +7,12 @@ import TOCInline from '@theme/TOCInline';
 import { TabbedCodeBlock } from '../../src/components/TabbedCodeBlock';
 import { APISeparator } from '../../src/components/APISeparator';
 
+The `graph-lib` library provides numerous functions for creating and working with directed graphs. Functionality is
+generally split into the following categories: The [core](#core) functions provide basic functionality for creating,
+editing, and accessing graphs and their components. The [layout](#layout) functions provide various methods for
+assigning positions to nodes. The [traverse](#traverse) functions provide various methods for traversing and searching
+graphs.
+
 <TOCInline toc={toc}/>
 
 ## Types
@@ -82,7 +88,12 @@ type Graph<N extends Node = Node, E extends Edge = Edge> = {
 }
 ```
 
-## Creating Graphs
+## Core
+
+The core functions of the `graph-lib` library provide basic functionality for creating, editing, and accessing graphs
+and their components.
+
+<APISeparator/>
 
 ### `newGraph(nodes?, edges?)` {#newGraph}
 
@@ -139,11 +150,6 @@ const graph = newGraph([a, b], [ab]);
 </TabbedCodeBlock>
 
 <APISeparator/>
-
-## Editing Graphs
-
-The functions in this section all create a new graph by editing an existing graph. Because graphs are immutable,
-they are never actually "edited". Rather, a new graph is produced to reflect the result of the desired change.
 
 ### `addEdge(graph, edge)` {#addEdge}
 
@@ -306,13 +312,6 @@ const g1 = addNodes(g0, [a, b]);
 
 <APISeparator/>
 
-## Using Graphs
-
-### `breadthFirst(graph, nodeID, callback?)` {#breadthFirst}
-
-#### `breadthFirst(graph: Graph, nodeID: string): Node[]`
-#### `breadthFirst(graph: Graph, nodeID: string, callback: (current: Node) => boolean)`
-
 ### `getEdge(graph, edgeID)` {#getEdge}
 
 #### `getEdge(graph: Graph, edgeID: string): Edge | undefined`
@@ -328,6 +327,10 @@ const g1 = addNodes(g0, [a, b]);
 ### `getNodes(graph, nodeIDs)` {#getNodes}
 
 #### `getNodes(graph: Graph, nodeIDs: string[]): (Node | undefined)[]`
+
+### `getPredecessors(graph, nodeID)` {#getPredecessors}
+
+`getPredecessors(graph: Graph, nodeID: string): Node[]`
 
 ### `getSuccessors(graph, nodeID)` {#getSuccessors}
 
@@ -348,3 +351,177 @@ const g1 = addNodes(g0, [a, b]);
 ### `hasNodes(graph, nodeIDs)` {#hasNodes}
 
 #### `hasNodes(graph: Graph, nodeIDs: string[]): boolean`
+
+## Algorithms
+
+### `getLeftwardEdges(graph, nodes)` {#getLeftwardEdges}
+
+Given an ordered array of graph [nodes](#node), get all [edges](#edge) that have a source node index greater than
+or equal to a target node index.
+
+**Type Definitions:**
+
+`getLeftwardEdges(graph: Graph, nodes: Node[]): Edge[]`
+
+**Arguments:**
+* `graph`: A [graph](#graph) object
+* `nodes`: An ordered array of [nodes](#node) that exist in `graph`
+
+**Returns:**
+
+An array of edges whose source node indices are greater than or equal to their corresponding target node indices.
+
+**Examples:**
+
+<TabbedCodeBlock>
+
+```typescript
+const a: Node = { id: 'a' };
+const b: Node = { id: 'b' };
+const c: Node = { id: 'c' };
+const ab: Edge = { id: 'ab', source: 'a', target: 'b' };
+const bc: Edge = { id: 'bc', source: 'b', target: 'c' };
+const ca: Edge = { id: 'ca', source: 'c', target: 'a' };
+const g: Graph = newGraph([a, b, c], [ab, bc, ca]);
+
+getLeftwardEdges(g, [a, b, c]);
+// => [ca]
+
+getLeftwardEdges(g, [b, c, a]);
+// => [ab]
+```
+
+```javascript
+const a = { id: 'a' };
+const b = { id: 'b' };
+const c = { id: 'c' };
+const ab = { id: 'ab', source: 'a', target: 'b' };
+const bc = { id: 'bc', source: 'b', target: 'c' };
+const ca = { id: 'ca', source: 'c', target: 'a' };
+const g = newGraph([a, b, c], [ab, bc, ca]);
+
+getLeftwardEdges(g, [a, b, c]);
+// => [ca]
+
+getLeftwardEdges(g, [b, c, a]);
+// => [ab]
+```
+
+</TabbedCodeBlock>
+
+### `removeCyclesGreedy(graph)` {#removeCyclesGreedy}
+
+Remove cycles from a graph using the Greedy Cycle Removal algorithm. The Greedy Cycle Removal algorithm finds a set of
+edges, known as a [feedback arc set](https://en.wikipedia.org/wiki/Feedback_arc_set), which when removed from the graph
+results in a new graph that has no cycles. This function finds the FAS and returns both the new graph and the set of
+edges that were removed.
+
+**P. Eades, X. Lin, and W. F. Smyth.** A fast and effective heuristic for the feedback arc set problem.
+Information Processing Letters, 47(6):319–323, 1993.
+[[pdf](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.47.7745&rep=rep1&type=pdf)]
+
+**Type Definitions:**
+
+`removeCyclesGreedy(graph: Graph<N, E>): [Graph<N, E>, E[]]`
+
+**Arguments:**
+* `graph`: A [graph](#graph) object
+
+**Returns:**
+
+An array, `[g, e]`, which is composed of the following:
+* `g`: A [graph](#graph) with no cycles
+* `e`: An array of [edges](#edges) that were removed from the input `graph` to create `g`
+
+**Examples:**
+
+<TabbedCodeBlock>
+
+```typescript
+const a: Node = { id: 'a' };
+const b: Node = { id: 'b' };
+const c: Node = { id: 'c' };
+const ab: Edge = { id: 'ab', source: 'a', target: 'b' };
+const bc: Edge = { id: 'bc', source: 'b', target: 'c' };
+const ca: Edge = { id: 'ca', source: 'c', target: 'a' };
+const aa: Edge = { id: 'aa', source: 'a', target: 'a' };
+const g0: Graph = newGraph([a, b, c], [ab, bc, ca, aa]);
+
+const [g1, removedEdges] = graphlib.removeCyclesGreedy(g0);
+// => g1 is g0 with edges aa and bc removed
+// => removedEdges = [aa, bc]
+```
+
+```javascript
+const a = { id: 'a' };
+const b = { id: 'b' };
+const c = { id: 'c' };
+const ab = { id: 'ab', source: 'a', target: 'b' };
+const bc = { id: 'bc', source: 'b', target: 'c' };
+const ca = { id: 'ca', source: 'c', target: 'a' };
+const aa = { id: 'aa', source: 'a', target: 'a' };
+const g0 = newGraph([a, b, c], [ab, bc, ca, aa]);
+
+const [g1, removedEdges] = graphlib.removeCyclesGreedy(g0);
+// => g1 is g0 with edges aa and bc removed
+// => removedEdges = [aa, bc]
+```
+
+</TabbedCodeBlock>
+
+## Layout
+
+### `moveNode(graph, nodeID, position)` {#moveNode}
+
+### `moveNodes(graph, nodeIDs, position)` {#moveNodes}
+
+### `offsetNode(graph, nodeID, offset)` {#offsetNode}
+
+### `offsetNodes(graph, nodeIDs, offset)` {#offsetNodes}
+
+## Traverse
+
+<APISeparator/>
+
+### `breadthFirst(graph, nodeID, fn?)` {#breadthFirst}
+
+Invokes the specified `fn` for the node with ID `nodeID` and each descendant in breadth-first order. The specified
+function is passed the current descendant, the zero-based traversal index, and the node with ID `nodeID`. If the
+function returns a truthy value, traversal is stopped. If no function is specified, an array of nodes in breadth-first
+order is returned.
+
+**Type Definitions:**
+
+```typescript
+breadthFirst(graph: Graph, nodeID: string): Node[]
+breadthFirst(graph: Graph, nodeID: string, fn: (current: Node, index: number, node: Node) => boolean): void
+```
+
+**Arguments:**
+* `graph`: A [Graph](#graph) object
+* `nodeID`: ID of the node at which to begin traversal
+* `fn`: (optional) A function with the following arguments:
+  * `current`: The current descendant node
+  * `index`: The zero-based traversal index
+  * `node`: The node with ID `nodeID`
+  * **Returns**: a boolean value indicating whether or not to terminate traversal
+
+**Returns:**
+
+If no function is specified, returns an array of [nodes](#node) in breadth-first order, otherwise nothing.
+
+**Examples:**
+
+```typescript
+console.log('Coming soon...');
+```
+
+<APISeparator/>
+
+### `depthFirst(graph, nodeID, fn?)` {#depthFirst}
+
+<APISeparator/>
+
+### `depthFirstPost(graph, nodeID, fn?)` {#depthFirstPost}
+
+<APISeparator/>
